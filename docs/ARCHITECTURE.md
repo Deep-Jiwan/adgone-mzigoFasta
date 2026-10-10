@@ -65,6 +65,7 @@ flowchart LR
     end
 
     subgraph Edge["Cloudflare (serverless)"]
+        WAF["WAF rate limiting<br/>(runs before any Worker)"]
         API["API<br/>Workers"]
         PUB["Public track endpoint<br/>Workers + edge cache"]
         R2[("R2<br/>photos, PDFs")]
@@ -81,9 +82,10 @@ flowchart LR
         BR["Bridge<br/>ingest + outbox relay"]
     end
 
-    DA -- "HTTPS: accept, pickup, deliver" --> API
-    SA -- "HTTPS: post job, rate" --> API
-    OA -- HTTPS --> API
+    DA -- "HTTPS: accept, pickup, deliver" --> WAF
+    SA -- "HTTPS: post job, rate" --> WAF
+    OA -- HTTPS --> WAF
+    WAF --> API
     API --> PG
     API --> R2
     API -. "verify JWT" .-> AUTH
@@ -98,7 +100,8 @@ flowchart LR
     PG -- "outbox: status events" --> BR
     BR -- "publish events, offers" --> MQ
 
-    TP -- "poll ~5 min" --> PUB
+    TP -- "poll ~5 min" --> WAF
+    WAF --> PUB
     PUB --> PG
 ```
 
@@ -110,6 +113,7 @@ flowchart LR
 | Web apps | Cloudflare Pages | Free static hosting next to the API | Any static host |
 | Database | Postgres + **PostGIS** (Supabase managed) | "Drivers within 5 km with a canter" is one indexed query. Transactions for atomic accept | Neon + Hyperdrive; Cloudflare D1 lacks geo indexes (Q-28) |
 | Auth | Supabase Auth, phone + SMS code | Phone is identity in Tanzania. Issues JWTs the API can verify | Custom auth in Workers |
+| Edge protection | Cloudflare WAF rate-limiting rules | Blocks abusive traffic before a Worker runs, so blocked requests cost nothing (§3.1) | Workers Rate Limiting binding (runs inside the Worker) |
 | Files | Cloudflare R2 | Cheap, no egress fees, signed URLs | Supabase Storage |
 | Broker | **EMQX** | JWT auth with per-topic permissions in the token, shared subscriptions, rules engine, MQTT over WebSockets for browsers, handles very large connection counts on a small machine | Mosquitto, NanoMQ, VerneMQ (self-host); EMQX Cloud, HiveMQ Cloud, AWS IoT Core (managed) (Q-26) |
 | Bridge | Small long-running TypeScript service next to the broker | Must hold an MQTT subscription open 24/7, which is something serverless functions are not built for | EMQX rules engine writing to Postgres directly (fewer moving parts, less control) |
@@ -123,6 +127,26 @@ build on it.
 
 A **fully-Cloudflare alternative** exists and is documented in §10. It's simpler to operate
 but means giving up MQTT itself.
+
+### 3.1 Edge security
+
+A Worker runs on every request to its route, even when the answer comes from the cache, so abuse
+costs money as well as exposing data. Defences, in order of importance:
+
+1. **Unguessable public tokens.** Tracking tokens are random, at least 128 bits, never sequential
+   or derived from the delivery id. Enumerating them to scrape delivery volumes is not feasible.
+2. **WAF rate-limiting rules in front of every Worker route.** They run before the Worker, so
+   blocked requests cost nothing. Starting limits (tune with real traffic):
+
+   | Route | Limit (per IP unless noted) | Why |
+   |---|---|---|
+   | `GET /t/{token}` public tracking | ~30 / min | Page polls every ~5 min; anything faster is scraping |
+   | Login: request SMS code | ~3 / 10 min per phone number, ~10 / hour per IP, alerting on unusual number prefixes | **SMS pumping**: bots requesting codes to premium numbers can burn the SMS budget overnight. The most important limit. |
+   | Delivery code check | 5 attempts per delivery, then locked for ops | Stops guessing the 4-digit code |
+   | Other API routes | generous per-user limits | General abuse |
+
+3. **Same response for unknown and expired tokens** (404), so probing reveals nothing.
+4. **Public snapshot is minimal**: no phone numbers, partial plate, position stops at delivery.
 
 ## 4. MQTT design
 
@@ -171,11 +195,16 @@ what the holder may publish and subscribe to. EMQX checks every publish and subs
 Compact JSON to start (switch to a binary format later only if data cost demands it):
 
 ```json
-{ "t": 1791398400, "lat": -6.79235, "lng": 39.20831, "acc": 12, "spd": 8.3, "hdg": 118, "bat": 54, "seq": 4127 }
+{ "t": 1791398400, "lat": -6.79235, "lng": 39.20831, "acc": 12, "spd": 8.3, "hdg": 118, "bat": 54, "seq": 4127, "mock": false }
 ```
 
 `t` = device time (seconds), `acc` = accuracy in metres, `spd` = m/s, `hdg` = heading, `bat` =
-battery %, `seq` = per-delivery counter so the bridge can drop duplicates and spot gaps.
+battery %, `seq` = per-delivery counter so the bridge can drop duplicates and spot gaps, `mock` =
+Android reported this fix as coming from a mock-location (fake GPS) app.
+
+Points flagged `mock` are still published and stored (they are evidence), but the bridge raises a
+fraud signal and the shop map marks the position as unreliable. The phone's own flags are never
+trusted on their own; the bridge runs its own checks (§5).
 
 ### 4.4 How often the phone publishes
 
@@ -211,6 +240,9 @@ splits messages between copies automatically.
 - Geofence hints: when the driver is within ~100 m of pickup or drop-off, it notifies the driver
   app ("You've arrived, scan the QR"). It never changes state on its own.
 - Ops alerts: stopped for too long, far off the expected route, battery low, no signal.
+- **Fraud checks** on each trail, written to `fraud_signals` for ops: mock-location fixes,
+  impossible speed between consecutive points (e.g. > 150 km/h for a boda), jumps across town,
+  long gaps followed by a far-away position, a trail that never reaches the pickup.
 
 **Database → broker (outbox relay)**
 - The API, inside the same transaction that changes a delivery, writes an `outbox` row.
@@ -244,11 +276,11 @@ sequenceDiagram
     Note over BR: also sends a push notification to matching drivers in the background
     D1->>API: POST /deliveries/{id}/accept
     D2->>API: POST /deliveries/{id}/accept
-    API->>DB: UPDATE ... SET driver=A, status=ACCEPTED WHERE status=OPEN
-    Note over DB: the row is locked, only one update can succeed
+    Note over API: checks the device integrity verdict sent with the request
+    API->>DB: one transaction: UPDATE delivery SET driver=A, status=ACCEPTED WHERE status=OPEN<br/>+ hold commission from A's wallet + outbox(delivery.accepted)
+    Note over DB: the row is locked, only one update can succeed.<br/>If A's available balance can't cover the commission, the whole transaction is rolled back.
     API-->>D1: 200 + job-scoped MQTT token
     API-->>D2: 409 already taken
-    API->>DB: outbox(delivery.accepted)
     BR->>MQ: evt → shop, inbox → driver B "taken", retract offer
 ```
 
@@ -286,24 +318,73 @@ Both are plain API calls with the evidence attached:
 If the driver is offline at that moment, the app queues the call and shows "waiting for network".
 The server records both the device time and server time.
 
+**Anti-spoofing on checkpoints.** The app blocks these actions (and the "at pickup" / "at drop-off"
+taps) while a mock-location app is active. Every checkpoint call carries the GPS fix with its
+`mock` flag and a fresh device integrity token; the API rejects mock fixes and stores the integrity
+verdict in the event's `integrity` column. Failing integrity is handled per Q-37 (block or send to
+ops review).
+
+The driver app shows the pickup location's **storefront photo** next to the landmark text on the
+way to pickup.
+
+### 6.4 Driver wallet and commission
+
+Phase 1 commission is collected from a prepaid driver wallet (PLAN.md §6). Money is tracked like
+accounting, not like a counter:
+
+```
+deposit (mobile money callback)     ledger +5,000      balance 5,000   held 0      available 5,000
+accept job 812 (commission 1,200)   hold   1,200       balance 5,000   held 1,200  available 3,800
+deliver job 812                     ledger −1,200      balance 3,800   held 0      available 3,800
+                                    (hold → captured)
+accept job 815 (commission 1,500)   hold   1,500       balance 3,800   held 1,500  available 2,300
+shop cancels job 815 early          hold → released    balance 3,800   held 0      available 3,800
+```
+
+- **Ledger entries are the truth.** They are only ever inserted. `driver_wallets` is a cached
+  total updated in the same transaction as each entry or hold, and can be rebuilt from the ledger.
+- **Holds** are a separate table: one per delivery, `held → captured | released`. Capturing a hold
+  writes the commission ledger entry.
+- **Charged once.** A unique constraint on (`delivery_id`, `type`) for commission entries means a
+  repeated event or retried request can't charge a delivery twice. Our events are delivered at least
+  once by design, so this has to be enforced by the database.
+- **Credited once.** Deposits carry the payment provider's transaction reference with a unique
+  constraint, so a repeated payment callback can't credit the wallet twice.
+- **Never negative.** A check constraint keeps `balance_tzs - held_tzs >= 0`.
+- **Manual adjustments** by ops are ledger entries too, with who made them and why.
+- **Offer gating.** Drivers whose available balance is below the smallest commission for their
+  vehicle class are not sent offers.
+
 ## 7. Data model (first draft)
 
 ```
-shops            id, name, phone, tin?, address_pin (geography), status, created_at
+shops            id, name, phone, tin?, status, created_at
 shop_members     shop_id, user_id, role (owner|staff)
+pickup_locations id, shop_id, name, pin, landmark, storefront_photo_key (required), is_default
 drivers          id, user_id, name, nida_no, licence_no, status (pending|approved|suspended), tier, rating_avg, rating_count
 vehicles         id, driver_id, class (boda|bajaji|car|pickup|canter), plate, capacity_kg, photos
-deliveries       id, shop_id, driver_id?, vehicle_class, status, pickup_pin, pickup_landmark,
-                 dropoff_pin, dropoff_landmark, recipient_name, recipient_phone,
-                 goods_description, declared_value_tzs, price_tzs, code_hash, posted_at, ...
-delivery_events  id, delivery_id, type, actor_id, at, pin, payload     (append-only audit log)
+deliveries       id, shop_id, driver_id?, vehicle_class, status, pickup_location_id, pickup_pin,
+                 pickup_landmark, dropoff_pin, dropoff_landmark, recipient_name, recipient_phone,
+                 goods_description, declared_value_tzs, price_tzs, commission_tzs, code_hash,
+                 posted_at, ...
+delivery_events  id, delivery_id, type, actor_id, at, pin, payload,
+                 integrity (jsonb: mock flag, device integrity verdict, app version)   (append-only audit log)
 documents        id, delivery_id, kind (waybill|pickup_photo|pod_photo|signature|pod_pdf), r2_key, sha256
-location_points  delivery_id, seq, t, pin, acc, spd, hdg              (partitioned by month)
+location_points  delivery_id, seq, t, pin, acc, spd, hdg, mock (bool) (partitioned by month)
 delivery_latest  delivery_id, pin, t, spd, hdg                        (one row per active delivery)
 driver_presence  driver_id, vehicle_class, pin, online, updated_at    (GiST index on pin)
 public_links     token, delivery_id, expires_at, snapshot (json), snapshot_at
 ratings          delivery_id, from_role, from_id, to_id, stars, comment
 outbox           id, topic, payload, created_at, published_at?
+
+fraud_signals    id, driver_id, delivery_id?, kind (mock_location|impossible_speed|jump|integrity_failed|...),
+                 at, details (jsonb), reviewed_by?, outcome?
+
+driver_wallets   driver_id, balance_tzs, held_tzs, updated_at          (cached totals; CHECK balance_tzs - held_tzs >= 0)
+wallet_holds     id, driver_id, delivery_id (unique), amount_tzs, status (held|captured|released), created_at, settled_at?
+ledger_entries   id, driver_id, amount_tzs (signed), type (deposit|commission|adjustment|refund|bonus),
+                 delivery_id?, external_ref?, created_by, note, created_at
+                 UNIQUE (delivery_id, type) for commission; UNIQUE (external_ref) for deposits
 ```
 
 Notes:
@@ -311,6 +392,11 @@ Notes:
 - `pin` columns are PostGIS `geography(Point, 4326)`.
 - Raw `location_points` are kept for N days, then thinned out (Q-22).
 - Row-level security on every table, so even a bug in the API can't leak one shop's data to another.
+- `deliveries.commission_tzs` is fixed at accept time, so later price changes can't alter what a
+  driver is charged for a job already taken.
+- The mock flag is a plain column on `location_points` rather than a flexible JSON column: that
+  table gets a row every few seconds per driver, so it stays narrow. Detailed findings live in
+  `fraud_signals`.
 
 ## 8. Repository layout (proposal)
 

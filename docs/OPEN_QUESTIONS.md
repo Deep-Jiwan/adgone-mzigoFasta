@@ -7,13 +7,15 @@ if a question stays open. Fill in **Answer** as decisions are made.
 - **Before launch**: can wait until MVP is built, but not until launch.
 - **Later**: Phase 2 or after.
 
-| ID | Topic | Priority |
+| IDs | Topic | Priority |
 |---|---|---|
-| Q-01 – Q-13 | [Business model and product](#business-model-and-product) | mostly blocking |
-| Q-14 – Q-18 | [Operations, trust and legal](#operations-trust-and-legal) | before launch |
+| Q-01 – Q-13, Q-35 | [Business model and product](#business-model-and-product) | mostly blocking |
+| Q-14 – Q-18, Q-36, Q-37 | [Operations, trust and legal](#operations-trust-and-legal) | before launch |
 | Q-19 – Q-25 | [Integrations and data](#integrations-and-data) | mixed |
 | Q-26 – Q-31 | [Technical choices](#technical-choices) | blocking for build |
 | Q-32 – Q-34 | [Project](#project) | blocking |
+
+IDs never change once assigned, so questions added later sit in their topic with a higher number.
 
 ---
 
@@ -30,6 +32,9 @@ if a question stays open. Fill in **Answer** as decisions are made.
 ### Q-02 · How does the platform make money? · Blocking
 - **Options:** commission per delivery (e.g. 10–20% of the price), monthly subscription for shops,
   or both.
+- **Decided mechanism:** in Phase 1 commission is collected from a prepaid driver wallet (PLAN.md
+  §6), because the shop pays the driver directly. Still open: the commission rate, and whether it's a
+  percentage, a fixed fee per vehicle class, or both.
 - **Suggested default:** commission per delivery. Optional subscription later for high-volume shops
   (lower commission, invoicing, priority).
 - **Answer:**
@@ -46,8 +51,9 @@ if a question stays open. Fill in **Answer** as decisions are made.
 ### Q-04 · Who pays, and when? · Blocking
 - **Options:** shop pays per job at posting / at delivery; shop tops up a prepaid wallet; recipient
   pays the delivery fee.
-- **Suggested default:** shop pays. MVP: settled outside the app (cash / mobile money), recorded in
-  the app. Phase 2: prepaid shop wallet charged automatically on delivery.
+- **Suggested default:** shop pays. MVP: shop pays the driver directly (cash / mobile money),
+  recorded in the app; the platform's commission comes from the driver wallet. Phase 2: prepaid
+  shop wallet charged automatically on delivery, platform pays drivers out.
 - **Answer:**
 
 ### Q-05 · Will drivers collect cash on delivery for the shop? · Later, but decide direction now
@@ -58,8 +64,9 @@ if a question stays open. Fill in **Answer** as decisions are made.
 - **Answer:**
 
 ### Q-06 · How and when are drivers paid? · Later
-- **Suggested default:** MVP drivers are paid directly by the shop. Phase 2: platform wallet,
-  daily payout to the driver's mobile money.
+- **Suggested default:** MVP drivers are paid directly by the shop (the Phase 1 driver wallet only
+  holds platform fees and can't be withdrawn). Phase 2: earnings collected by the platform, daily
+  payout to the driver's mobile money.
 - **Answer:**
 
 ### Q-07 · Cancellation rules · Before launch
@@ -108,6 +115,15 @@ if a question stays open. Fill in **Answer** as decisions are made.
   get a 60-second head start on that shop's offers. Drivers see shop rating.
 - **Answer:**
 
+### Q-35 · Driver wallet rules · Blocking
+- **Questions:** minimum top-up amount? Launch bonus credit for early drivers? Can a driver get the
+  remaining balance back when they leave the platform? Do commission holds get partly charged on
+  late cancellations (ties to Q-07)?
+- **Suggested default:** minimum top-up TZS 2,000; TZS 10,000 launch credit for the first 100
+  approved drivers; balance refundable on request when leaving (minus any open disputes); late
+  cancellations by the driver charge the full hold, by the shop release it.
+- **Answer:**
+
 ## Operations, trust and legal
 
 ### Q-14 · Driver onboarding requirements · Before launch
@@ -140,18 +156,38 @@ if a question stays open. Fill in **Answer** as decisions are made.
   etc.) that shops accept when signing up. Drivers can refuse at pickup without penalty.
 - **Answer:**
 
+### Q-36 · Is a prepaid driver wallet regulated? · Before launch
+- **Question:** does holding drivers' prepaid balances count as e-money or another activity the
+  Bank of Tanzania regulates? Does it change if the balance is refundable (Q-35)?
+- **Suggested default:** keep it closed-loop (only spendable on platform fees, not transferable);
+  get a legal opinion in Phase 0 together with Q-15, Q-24 and Q-25.
+- **Answer:**
+
+### Q-37 · Rooted phones and fake GPS: block or review? · Before launch
+- **Questions:** if the device integrity check fails (rooted or tampered phone), do we block the
+  driver from going online, or allow it and send their jobs to ops review? How many fake-GPS
+  detections before suspension?
+- **Suggested default:** mock location active → checkpoints blocked until it's turned off (always).
+  Failed integrity → allowed for low-value jobs only, flagged to ops. Three confirmed spoofing
+  signals → suspended pending review.
+- **Answer:**
+
 ## Integrations and data
 
-### Q-19 · Mobile money aggregator · Later
+### Q-19 · Mobile money aggregator · Blocking (driver wallet top-ups in Phase 1)
 - **Options:** Selcom, AzamPay, ClickPesa, DPO, or direct integration with each mobile network.
+- **Why it's now needed in Phase 1:** drivers top up their wallet (PLAN.md §6). Phase 1 only
+  needs **collection** (money in); payouts (money out) come in Phase 2.
 - **Suggested default:** one aggregator covering M-Pesa, Mixx by Yas, Airtel Money and HaloPesa,
-  chosen on fees, payout (disbursement) support and API quality.
+  chosen on fees, USSD push support, payout (disbursement) support and API quality. For a very
+  small pilot, a till number reconciled manually by ops is an acceptable stopgap.
 - **Answer:**
 
 ### Q-20 · SMS gateway · Blocking (login needs it)
 - **Options:** Beem Africa, Africa's Talking, NextSMS, Twilio.
 - **Suggested default:** a local gateway (cheaper, local sender ID). Must work with the auth
-  provider's phone login.
+  provider's phone login. Prefer one that supports spend caps and alerts, as a second line of
+  defence against SMS pumping (ARCHITECTURE.md §3.1).
 - **Answer:**
 
 ### Q-21 · Maps · Blocking
