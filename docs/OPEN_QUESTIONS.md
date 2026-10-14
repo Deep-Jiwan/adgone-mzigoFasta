@@ -9,7 +9,7 @@ if a question stays open. Fill in **Answer** as decisions are made.
 
 | IDs | Topic | Priority |
 |---|---|---|
-| Q-01 – Q-13, Q-35 | [Business model and product](#business-model-and-product) | mostly blocking |
+| Q-01 – Q-13, Q-35, Q-38 | [Business model and product](#business-model-and-product) | mostly blocking |
 | Q-14 – Q-18, Q-36, Q-37 | [Operations, trust and legal](#operations-trust-and-legal) | before launch |
 | Q-19 – Q-25 | [Integrations and data](#integrations-and-data) | mixed |
 | Q-26 – Q-31 | [Technical choices](#technical-choices) | blocking for build |
@@ -124,6 +124,12 @@ IDs never change once assigned, so questions added later sit in their topic with
   cancellations by the driver charge the full hold, by the shop release it.
 - **Answer:**
 
+### Q-38 · Can a driver carry more than one delivery at a time? · Before launch
+- **Context:** the backend currently allows one active delivery per driver (enforced in the
+  database). A boda rider could often carry two small parcels going the same way.
+- **Suggested default:** one at a time for the pilot; revisit with multi-stop routes in Phase 3.
+- **Answer:**
+
 ## Operations, trust and legal
 
 ### Q-14 · Driver onboarding requirements · Before launch
@@ -231,18 +237,18 @@ IDs never change once assigned, so questions added later sit in their topic with
   fully open alternatives (with fewer features).
 - **Suggested default:** (a) for the MVP. Cheapest and fully under our control. Move to managed if
   ops work becomes a burden.
-- **Answer:**
+- **Answer:** _Not confirmed. The backend is built with the suggested default for now._
 
 ### Q-27 · Where does the API run? · Blocking for build
 - **Options:** Cloudflare Workers (serverless) or a Node service on the same VPS as the broker.
 - **Suggested default:** Cloudflare Workers.
-- **Answer:**
+- **Answer:** _Not confirmed. The backend is built with the suggested default for now._
 
 ### Q-28 · Which Postgres? · Blocking for build
 - **Options:** Supabase (Postgres + PostGIS + phone auth), Neon (+ Cloudflare Hyperdrive), or
   self-hosted on the VPS.
 - **Suggested default:** Supabase. One provider for database and phone auth, PostGIS included.
-- **Answer:**
+- **Answer:** _Not confirmed. The backend is built with the suggested default for now._
 
 ### Q-29 · Driver app framework and language · Blocking for build
 - **Options:** React Native (Expo) in TypeScript, or Flutter (Dart).

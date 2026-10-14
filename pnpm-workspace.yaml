@@ -1,0 +1,8 @@
+packages:
+  - packages/*
+  - services/*
+
+# Native binaries these packages download on install (esbuild for bundling, workerd for wrangler dev).
+onlyBuiltDependencies:
+  - esbuild
+  - workerd

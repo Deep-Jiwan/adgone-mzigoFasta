@@ -141,7 +141,7 @@ costs money as well as exposing data. Defences, in order of importance:
    | Route | Limit (per IP unless noted) | Why |
    |---|---|---|
    | `GET /t/{token}` public tracking | ~30 / min | Page polls every ~5 min; anything faster is scraping |
-   | Login: request SMS code | ~3 / 10 min per phone number, ~10 / hour per IP, alerting on unusual number prefixes | **SMS pumping**: bots requesting codes to premium numbers can burn the SMS budget overnight. The most important limit. |
+   | Login: request SMS code | ~3 / 10 min per phone number, ~10 / hour per IP, alerting on unusual number prefixes | **SMS pumping**: bots requesting codes to premium numbers can burn the SMS budget overnight. The most important limit. Login codes are sent by the auth provider, so this limit is set there (infra/cloudflare/README.md). |
    | Delivery code check | 5 attempts per delivery, then locked for ops | Stops guessing the 4-digit code |
    | Other API routes | generous per-user limits | General abuse |
 
@@ -355,7 +355,9 @@ shop cancels job 815 early          hold → released    balance 3,800   held 0 
 - **Offer gating.** Drivers whose available balance is below the smallest commission for their
   vehicle class are not sent offers.
 
-## 7. Data model (first draft)
+## 7. Data model
+
+The authoritative schema is `infra/db/migrations/0001_init.sql`; this is the summary.
 
 ```
 shops            id, name, phone, tin?, status, created_at
@@ -369,7 +371,8 @@ deliveries       id, shop_id, driver_id?, vehicle_class, status, pickup_location
                  posted_at, ...
 delivery_events  id, delivery_id, type, actor_id, at, pin, payload,
                  integrity (jsonb: mock flag, device integrity verdict, app version)   (append-only audit log)
-documents        id, delivery_id, kind (waybill|pickup_photo|pod_photo|signature|pod_pdf), r2_key, sha256
+uploads          id, owner_user_id, kind (storefront_photo|pickup_photo|dropoff_photo|signature|driver_document|vehicle_photo),
+                 r2_key, content_type, size_bytes, sha256, delivery_id?
 location_points  delivery_id, seq, t, pin, acc, spd, hdg, mock (bool) (partitioned by month)
 delivery_latest  delivery_id, pin, t, spd, hdg                        (one row per active delivery)
 driver_presence  driver_id, vehicle_class, pin, online, updated_at    (GiST index on pin)

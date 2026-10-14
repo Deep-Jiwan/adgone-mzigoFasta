@@ -1,0 +1,30 @@
+name = "mzigofasta-api"
+main = "src/index.ts"
+compatibility_date = "2026-09-01"
+# postgres.js needs Node's net/tls compatibility layer.
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+PUBLIC_TRACKING_BASE_URL = "https://track.example.com/t"
+AUTH_AUDIENCE = "authenticated"
+# AUTH_JWKS_URL = "https://<project>.supabase.co/auth/v1/.well-known/jwks.json"
+# AUTH_ISSUER   = "https://<project>.supabase.co/auth/v1"
+
+# Secrets (set with `wrangler secret put NAME`, never committed):
+#   CODE_SECRET       HMAC secret for delivery codes and pickup QR codes
+#   MQTT_JWT_SECRET   shared with the EMQX JWT authenticator
+#   AUTH_JWT_SECRET   only if the auth provider signs with HS256 instead of JWKS
+
+[[hyperdrive]]
+binding = "HYPERDRIVE"
+id = "REPLACE_WITH_HYPERDRIVE_ID"
+# For `wrangler dev`, point at a local database:
+localConnectionString = "postgres://postgres:postgres@127.0.0.1:54329/mzigo_test"
+
+[[r2_buckets]]
+binding = "FILES"
+bucket_name = "mzigofasta-files"
+
+[triggers]
+# Expire unaccepted jobs and close old deliveries.
+crons = ["* * * * *"]

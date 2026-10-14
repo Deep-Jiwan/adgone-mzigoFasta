@@ -1,0 +1,4 @@
+# Copy to .dev.vars for `wrangler dev`. Never commit .dev.vars.
+CODE_SECRET=dev-code-secret-change-me
+MQTT_JWT_SECRET=dev-mqtt-secret-change-me
+AUTH_JWT_SECRET=dev-auth-secret-change-me

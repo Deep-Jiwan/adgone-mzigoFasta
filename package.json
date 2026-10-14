@@ -1,0 +1,19 @@
+{
+  "name": "mzigofasta",
+  "private": true,
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r --workspace-concurrency=1 test",
+    "db:test:start": "bash scripts/test-db.sh start",
+    "db:test:stop": "bash scripts/test-db.sh stop",
+    "db:test:reset": "bash scripts/test-db.sh reset",
+    "db:migrate": "node scripts/migrate.mjs"
+  },
+  "devDependencies": {
+    "postgres": "3.4.9"
+  }
+}

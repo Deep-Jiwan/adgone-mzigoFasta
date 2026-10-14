@@ -58,15 +58,21 @@ sequenceDiagram
 ### Delivery states
 
 ```
-DRAFT → OPEN → ACCEPTED → AT_PICKUP → PICKED_UP → AT_DROPOFF → DELIVERED → CLOSED
-          │        │           │            │             │
-          ▼        ▼           ▼            ▼             ▼
-       EXPIRED  CANCELLED  CANCELLED     FAILED ──► RETURNING ──► RETURNED
+OPEN → ACCEPTED → AT_PICKUP → PICKED_UP → AT_DROPOFF → DELIVERED → CLOSED
+  │       │  ▲        │           │            │
+  │       │  └release─┘           └────fail────┴──► RETURNING ──► RETURNED
+  ├─► EXPIRED
+  └─► CANCELLED   (also from ACCEPTED / AT_PICKUP)
 ```
 
-- `EXPIRED`: no driver accepted within the window (e.g. 15 min). Shop can repost.
-- `CANCELLED`: by shop or driver, always with a reason. Late cancellations may carry a fee (Q-07).
-- `FAILED`: recipient unreachable or refuses. Goods go back to the shop (`RETURNING` → `RETURNED`).
+The code version of this is `packages/contracts/src/delivery.ts`; it is the source of truth.
+
+- `EXPIRED`: no driver accepted within the window (15 min). Shop can repost.
+- `CANCELLED`: by the shop (or ops) before pickup, always with a reason. Late cancellation fees: Q-07.
+- `release`: the driver gives the job back before pickup; it goes back to `OPEN` for other drivers.
+- Once the goods are picked up there is no cancel. If the recipient is unreachable or refuses, the
+  driver marks it failed (`RETURNING`) and the shop confirms when the goods are back (`RETURNED`).
+- `CLOSED`: both sides have rated, or 7 days have passed since delivery.
 - Every transition is stored as an append-only event with who, when and where. That event log is
   the audit trail for disputes.
 
