@@ -27,7 +27,7 @@ IDs never change once assigned, so questions added later sit in their topic with
 - **Why it matters:** changes the posting screen, the matching logic and how fast jobs are accepted.
 - **Suggested default:** (a) platform price, with the shop allowed to add a tip to attract drivers
   faster. Simple, fast and predictable for shops.
-- **Answer:**
+- **Answer:** **Answered:** the pricing model is not hard-coded; it is a platform setting (platform fixed price, shop offer, or bidding) that an admin can change. Default value in settings: platform fixed price from distance + vehicle class, with optional shop tip.
 
 ### Q-02 · How does the platform make money? · Blocking
 - **Options:** commission per delivery (e.g. 10–20% of the price), monthly subscription for shops,
@@ -37,7 +37,7 @@ IDs never change once assigned, so questions added later sit in their topic with
   percentage, a fixed fee per vehicle class, or both.
 - **Suggested default:** commission per delivery. Optional subscription later for high-volume shops
   (lower commission, invoicing, priority).
-- **Answer:**
+- **Answer:** **Answered:** the revenue model is not hard-coded; commission rate/type (percentage, fixed fee per vehicle class) and any subscription are platform settings an admin can change.
 
 ### Q-03 · Who are the drivers? · Blocking
 - **Options:** independent drivers who sign up (like Bolt); partnerships with existing boda groups,
@@ -88,7 +88,7 @@ IDs never change once assigned, so questions added later sit in their topic with
   bigger trucks.
 - **Suggested default:** boda, bajaji, pickup, canter. Each with a simple size/weight guide shown
   to the shop when posting.
-- **Answer:**
+- **Answer:** **Answered:** boda, bajaji and pickup (kirikuu) at launch. Canter is left out of the first release.
 
 ### Q-10 · Launch area and hours · Blocking
 - **Suggested default:** a few dense commercial zones first (Kariakoo, Posta/City Centre,
