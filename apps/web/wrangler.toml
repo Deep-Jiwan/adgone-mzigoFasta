@@ -1,0 +1,4 @@
+name = "mzigofasta-web"
+compatibility_date = "2026-09-01"
+# Cloudflare Pages: static output from `pnpm build`. _redirects (in public/) makes every path serve index.html.
+pages_build_output_dir = "./dist"

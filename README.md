@@ -7,7 +7,7 @@ see it and accept. The shop watches the driver live on a map, hands over the goo
 QR code, and shares a public tracking link with its customer. The customer confirms receipt with a
 one-time code, and both sides rate each other.
 
-> Status: **backend MVP in progress.** No mobile or web apps yet.
+> Status: **backend MVP built; web app design prototype added** (mock data, not yet wired to the API).
 
 ## Documents
 
@@ -15,12 +15,14 @@ one-time code, and both sides rate each other.
 |---|---|
 | [docs/PLAN.md](docs/PLAN.md) | Product plan: users, journeys, scope per phase, Tanzania-specific concerns, risks |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | System design: control plane vs. location plane, MQTT topics, data model, key flows |
+| [docs/DESIGN.md](docs/DESIGN.md) | Web app design: reference, roles, settings-driven behaviour, known limits |
 | [docs/OPEN_QUESTIONS.md](docs/OPEN_QUESTIONS.md) | Every open business and technical decision, each with a suggested default |
 
 ## Repository
 
 ```
 packages/contracts   shared: delivery state machine, MQTT topics + payloads, broker permissions, geohash
+apps/web             web app: customer, driver, public link, admin (React Native Web)  → apps/web/README.md
 services/api         HTTP API on Cloudflare Workers (control plane)          → services/api/README.md
 services/bridge      MQTT ↔ Postgres service (location plane)                 → services/bridge/README.md
 infra/db             Postgres + PostGIS migrations

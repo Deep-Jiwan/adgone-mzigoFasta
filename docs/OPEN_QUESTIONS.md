@@ -46,7 +46,7 @@ IDs never change once assigned, so questions added later sit in their topic with
   manages several drivers and receives the money.
 - **Suggested default:** independent drivers for MVP, design the data model so a fleet owner
   account can be added in Phase 2.
-- **Answer:**
+- **Answer:** **Answered:** independent drivers who sign up themselves. Fleet-owner accounts are not planned for now.
 
 ### Q-04 · Who pays, and when? · Blocking
 - **Options:** shop pays per job at posting / at delivery; shop tops up a prepaid wallet; recipient
@@ -54,7 +54,7 @@ IDs never change once assigned, so questions added later sit in their topic with
 - **Suggested default:** shop pays. MVP: shop pays the driver directly (cash / mobile money),
   recorded in the app; the platform's commission comes from the driver wallet. Phase 2: prepaid
   shop wallet charged automatically on delivery, platform pays drivers out.
-- **Answer:**
+- **Answer:** **Answered:** the driver is paid per delivery, directly, in **cash** for now. The customer chooses when they request the delivery who pays: the sender at pickup, or the recipient at drop-off. Mobile money comes later (disabled in the app and in admin settings).
 
 ### Q-05 · Will drivers collect cash on delivery for the shop? · Later, but decide direction now
 - **Context:** very common in Tanzania (customer pays for the goods at the door). Huge value to
@@ -93,7 +93,7 @@ IDs never change once assigned, so questions added later sit in their topic with
 ### Q-10 · Launch area and hours · Blocking
 - **Suggested default:** a few dense commercial zones first (Kariakoo, Posta/City Centre,
   Mikocheni, Sinza, Mwenge), 07:00–20:00, then all of Dar.
-- **Answer:**
+- **Answer:** **Answered:** Dar es Salaam only, operating 24/7. Both are admin settings (service area, hours).
 
 ### Q-11 · Product name and brand · Before launch
 - **Context:** the repo is called `adgone-mzigoFasta`. Is the product **MzigoFasta**, and is
@@ -187,7 +187,7 @@ IDs never change once assigned, so questions added later sit in their topic with
 - **Suggested default:** one aggregator covering M-Pesa, Mixx by Yas, Airtel Money and HaloPesa,
   chosen on fees, USSD push support, payout (disbursement) support and API quality. For a very
   small pilot, a till number reconciled manually by ops is an acceptable stopgap.
-- **Answer:**
+- **Answer:** **Deferred:** cash only for now, so no mobile-money aggregator is needed yet. Driver wallet top-ups are recorded by ops after cash is handed over. Revisit when mobile money is added.
 
 ### Q-20 · SMS gateway · Blocking (login needs it)
 - **Options:** Beem Africa, Africa's Talking, NextSMS, Twilio.
@@ -214,7 +214,7 @@ IDs never change once assigned, so questions added later sit in their topic with
 - **Suggested default:** refresh every 5 min, configurable down to 1 min later. Show driver first
   name, vehicle class, partial plate, status, ETA, position. No phone number. Link stops showing
   position at delivery and expires 24 h later.
-- **Answer:**
+- **Answer:** **Answered:** the link is live until the delivery is marked delivered. It shows the vehicle's live position, destination, ETA, item, order number, and the driver's first name, vehicle type and partial plate (each switchable in admin settings). It never shows phone numbers or the delivery code. Refresh interval is a setting (default 10 s).
 
 ### Q-24 · TRA receipts · Before charging in-app
 - **Question:** do our fees need EFD/VFD receipts, and do drivers' earnings need anything?
@@ -256,11 +256,11 @@ IDs never change once assigned, so questions added later sit in their topic with
   mobile part. Both have good (sometimes paid) background-location libraries.
 - **Suggested default:** React Native + Expo in **TypeScript**, so the driver app, web apps, API
   and bridge all share `packages/contracts`.
-- **Answer:**
+- **Answer:** **Answered:** React Native components rendered as a **web app only** (react-native-web, built with Vite, hosted on Cloudflare Pages). No native apps for now. Note: a web-only driver app cannot track location reliably while the phone is locked or the browser is in the background (see docs/DESIGN.md, "Known limits").
 
 ### Q-30 · Shop app: web only, or native too? · Later
 - **Suggested default:** web app (installable as a PWA) for MVP. Native later if shops ask for it.
-- **Answer:**
+- **Answer:** **Answered:** web only. The customer role is the same web app.
 
 ### Q-31 · Location update rate · Before launch
 - **Suggested default:** on a job every 10 s or 50 m; idle every 60–120 s (ARCHITECTURE.md §4.4).

@@ -7,6 +7,7 @@
   },
   "scripts": {
     "typecheck": "pnpm -r typecheck",
+    "web:dev": "pnpm --filter @mzigo/web dev",
     "test": "pnpm -r --workspace-concurrency=1 test",
     "db:test:start": "bash scripts/test-db.sh start",
     "db:test:stop": "bash scripts/test-db.sh stop",
