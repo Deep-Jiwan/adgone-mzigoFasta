@@ -24,7 +24,7 @@ export function Overview() {
 
   const markers = [
     ...online.map((d) => ({ lat: d.lat, lng: d.lng, tone: "dark" as const, id: d.id })),
-    ...open.map((d) => ({ lat: d.pickup.lat, lng: d.pickup.lng, tone: "orange" as const, id: d.id })),
+    ...open.map((d) => ({ lat: d.pickup.lat, lng: d.pickup.lng, tone: "accent" as const, id: d.id })),
     ...active.flatMap((d) => (d.driverId ? [] : [])),
   ];
 
@@ -35,7 +35,7 @@ export function Overview() {
         <Stat label="Drivers online" value={String(online.length)} sub={`${drivers.filter((d) => d.status === "approved").length} approved`} />
         <Stat label="Delivered today" value={String(delivered.length)} sub={`${today.length} requested`} tone="green" />
         <Stat label="Cash moved today" value={money(gmv)} sub="paid driver-direct" />
-        <Stat label="Platform fees today" value={money(fees)} sub="from driver wallets" tone="orange" />
+        <Stat label="Platform fees today" value={money(fees)} sub="from driver wallets" tone="accent" />
       </Row>
 
       <SplitView
@@ -44,8 +44,8 @@ export function Overview() {
             <Card style={{ padding: 0, overflow: "hidden" }}>
               <MapView markers={markers} height={desktop ? 340 : 240} seed="admin" />
               <Row gap={16} style={{ padding: 14, flexWrap: "wrap" }}>
-                <Row gap={6}><View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: c.ink }} /><Muted>Online drivers</Muted></Row>
-                <Row gap={6}><View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: c.orange }} /><Muted>Jobs waiting</Muted></Row>
+                <Row gap={6}><View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: c.markerFill }} /><Muted>Online drivers</Muted></Row>
+                <Row gap={6}><View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: c.accent }} /><Muted>Jobs waiting</Muted></Row>
               </Row>
             </Card>
             <SectionHeader title="Latest deliveries" action="See all" onAction={() => nav("/admin/deliveries")} />

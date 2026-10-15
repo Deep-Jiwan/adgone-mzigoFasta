@@ -44,7 +44,7 @@ export function DataTable<R extends { id: string }>({ cols, rows, onRow, selecte
           {rows.map((r) => (
             <Pressable
               key={r.id} onPress={() => onRow?.(r)}
-              style={{ flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 18, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: c.line, backgroundColor: selected === r.id ? c.orangeSoft : "transparent", cursor: cursor(onRow ? "pointer" : "default") }}
+              style={{ flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 18, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: c.line, backgroundColor: selected === r.id ? c.accentSoft : "transparent", cursor: cursor(onRow ? "pointer" : "default") }}
             >
               {cols.map((col) => <View key={col.title} style={{ flex: col.width ? undefined : col.flex ?? 1, width: col.width, alignItems: col.align }}>{col.render(r)}</View>)}
             </Pressable>
@@ -81,7 +81,7 @@ export function NumInput({ value, onChange, suffix, width = 120 }: { value: numb
       <TextInput
         value={String(value)} keyboardType="numeric"
         onChangeText={(t) => { const n = Number(t.replace(/\D/g, "")); onChange(Number.isFinite(n) ? n : 0); }}
-        style={[{ flex: 1, fontSize: 15, paddingVertical: 13, minWidth: 0, color: c.ink }, noOutline]}
+        style={[{ flex: 1, fontSize: 15, paddingVertical: 13, minWidth: 0, color: c.text }, noOutline]}
       />
       {suffix ? <Muted>{suffix}</Muted> : null}
     </Row>

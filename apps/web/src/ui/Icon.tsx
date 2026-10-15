@@ -1,3 +1,4 @@
+import { c } from "../theme";
 import { Circle, Path, Svg } from "./svg";
 
 type Spec = { d?: string[]; circles?: [number, number, number][] };
@@ -50,7 +51,7 @@ const ICONS = {
 
 export type IconName = keyof typeof ICONS;
 
-export function Icon({ name, size = 22, color = "#060606", strokeWidth = 1.8, fill }: {
+export function Icon({ name, size = 22, color = c.text, strokeWidth = 1.8, fill }: {
   name: IconName; size?: number; color?: string; strokeWidth?: number; fill?: string;
 }) {
   const spec: Spec = ICONS[name];

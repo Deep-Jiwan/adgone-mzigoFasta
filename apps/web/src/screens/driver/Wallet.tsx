@@ -21,8 +21,8 @@ export function Wallet() {
         <Button label="Top up — mobile money soon" variant="light" disabled icon="plus" />
         <T v="tiny" color="#9A9AA1">For now, top up with cash at a MzigoFasta agent or the Kariakoo office. Ops credits your wallet within minutes.</T>
       </Card>
-      <Card style={{ flexDirection: "row", gap: 12, alignItems: "center", backgroundColor: c.orangeSoft }}>
-        <Icon name="cash" size={22} color={c.orangeDeep} />
+      <Card style={{ flexDirection: "row", gap: 12, alignItems: "center", backgroundColor: c.accentSoft }}>
+        <Icon name="cash" size={22} color={c.accentDeep} />
         <View style={{ flex: 1 }}><T v="body" weight="600">Customers pay you directly</T><Muted>Cash from senders or recipients is yours. It never goes through this wallet.</Muted></View>
       </Card>
       <SectionHeader title="Activity" />
@@ -31,7 +31,7 @@ export function Wallet() {
           <Card key={l.id} style={{ padding: 14 }}>
             <Row justify="space-between">
               <View style={{ gap: 4 }}><Badge tone={KIND[l.kind].tone}>{KIND[l.kind].label}</Badge><Muted v="tiny">{l.ref} · {l.at}</Muted></View>
-              <T v="h2" color={l.amount >= 0 ? c.green : c.ink}>{l.amount >= 0 ? "+" : "−"}{money(Math.abs(l.amount))}</T>
+              <T v="h2" color={l.amount >= 0 ? c.green : c.text}>{l.amount >= 0 ? "+" : "−"}{money(Math.abs(l.amount))}</T>
             </Row>
           </Card>
         ))}

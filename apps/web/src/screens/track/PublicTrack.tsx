@@ -45,7 +45,7 @@ export function PublicTrack() {
         <View>
           <MapView pickup={d.pickup} dropoff={d.dropoff} phase={finished || cancelled ? "none" : phase} leg={d.leg} height={330} seed={d.id} />
           <Row justify="space-between" style={{ position: "absolute", top: 16, left: 16, right: 16 }}>
-            <Row gap={8} style={{ backgroundColor: "#fff", paddingHorizontal: 14, paddingVertical: 10, borderRadius: 22 }}><Icon name="truck" size={16} /><T v="small" weight="600">MzigoFasta</T></Row>
+            <Row gap={8} style={{ backgroundColor: c.surface, paddingHorizontal: 14, paddingVertical: 10, borderRadius: 22 }}><Icon name="truck" size={16} /><T v="small" weight="600">MzigoFasta</T></Row>
             {!finished && !cancelled ? <Row gap={6} style={{ backgroundColor: c.ink, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20 }}><View style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: c.green }} /><T v="tiny" color="#fff">LIVE · updates every {t.refreshSeconds}s</T></Row> : null}
           </Row>
         </View>
@@ -53,46 +53,46 @@ export function PublicTrack() {
         <Sheet>
           <Row justify="space-between" align="flex-start">
             <View style={{ flex: 1 }}>
-              <T v="small" color="#9A9AA1">{finished ? "Completed" : cancelled ? "Status" : "Arriving about " + arrive}</T>
-              <T v="display" color="#fff" style={{ fontSize: 28 }}>{headline}</T>
+              <T v="small" color={c.onPanelMuted}>{finished ? "Completed" : cancelled ? "Status" : "Arriving about " + arrive}</T>
+              <T v="display" color={c.onPanel} style={{ fontSize: 28 }}>{headline}</T>
             </View>
             <Badge tone={STATUS_TONE[d.status]}>{STATUS_LABEL[d.status]}</Badge>
           </Row>
           {!cancelled ? <DotStepper steps={5} done={Math.max(0, idx - 1)} truckAt={idx < 5 ? idx - 1 : undefined} dark /> : null}
           <Row justify="space-between">
-            <View><T v="small" color="#9A9AA1">From</T><T v="body" color="#fff" weight="500">{d.pickup.name}</T></View>
-            <View style={{ alignItems: "flex-end" }}><T v="small" color="#9A9AA1">To</T><T v="body" color="#fff" weight="500">{d.dropoff.name}</T></View>
+            <View><T v="small" color={c.onPanelMuted}>From</T><T v="body" color={c.onPanel} weight="500">{d.pickup.name}</T></View>
+            <View style={{ alignItems: "flex-end" }}><T v="small" color={c.onPanelMuted}>To</T><T v="body" color={c.onPanel} weight="500">{d.dropoff.name}</T></View>
           </Row>
           <Divider dark />
 
           {driver && !finished && !cancelled ? (
-            <Row gap={12} style={{ backgroundColor: c.sheet2, borderRadius: 24, padding: 12 }}>
+            <Row gap={12} style={{ backgroundColor: c.panel2, borderRadius: 24, padding: 12 }}>
               <Avatar name={driver.name} size={48} ring />
               <View style={{ flex: 1 }}>
-                <T v="body" color="#fff" weight="600">{t.showDriverFirstName ? driver.name.split(" ")[0] : "Your driver"}</T>
-                <T v="small" color="#9A9AA1">{settings.vehicles[driver.vehicle].label}{t.showPlate ? ` · ${plate}` : ""} · ★ {driver.rating}</T>
+                <T v="body" color={c.onPanel} weight="600">{t.showDriverFirstName ? driver.name.split(" ")[0] : "Your driver"}</T>
+                <T v="small" color={c.onPanelMuted}>{settings.vehicles[driver.vehicle].label}{t.showPlate ? ` · ${plate}` : ""} · ★ {driver.rating}</T>
               </View>
             </Row>
           ) : null}
 
           <Row gap={12} align="flex-start">
             <View style={{ flex: 1, gap: 14 }}>
-              <View><T v="small" color="#9A9AA1">Item</T><T v="body" color="#fff" weight="500">{d.item}</T></View>
-              <View><T v="small" color="#9A9AA1">Order</T><T v="body" color="#fff" weight="500">{d.id}</T></View>
+              <View><T v="small" color={c.onPanelMuted}>Item</T><T v="body" color={c.onPanel} weight="500">{d.item}</T></View>
+              <View><T v="small" color={c.onPanelMuted}>Order</T><T v="body" color={c.onPanel} weight="500">{d.id}</T></View>
             </View>
             <View style={{ flex: 1, gap: 14 }}>
-              <View><T v="small" color="#9A9AA1">Recipient</T><T v="body" color="#fff" weight="500">{d.recipientName}</T></View>
-              {d.payer === "recipient" && !finished ? <View><T v="small" color="#9A9AA1">Pay driver on delivery (cash)</T><T v="body" color={c.orange} weight="600">{money(d.price + d.tip)}</T></View> : null}
+              <View><T v="small" color={c.onPanelMuted}>Recipient</T><T v="body" color={c.onPanel} weight="500">{d.recipientName}</T></View>
+              {d.payer === "recipient" && !finished ? <View><T v="small" color={c.onPanelMuted}>Pay driver on delivery (cash)</T><T v="body" color={c.accent} weight="600">{money(d.price + d.tip)}</T></View> : null}
             </View>
           </Row>
 
           {!finished && !cancelled && d.status !== "OPEN" ? (
-            <View style={{ backgroundColor: c.sheet2, borderRadius: 20, padding: 16, flexDirection: "row", gap: 12, alignItems: "center" }}>
-              <Icon name="lock" size={20} color={c.orange} />
-              <T v="small" color="#D5D5DA" style={{ flex: 1 }}>Have your 4-digit delivery code ready. It was sent to you by SMS. Only give it to the driver at the door.</T>
+            <View style={{ backgroundColor: c.panel2, borderRadius: 20, padding: 16, flexDirection: "row", gap: 12, alignItems: "center" }}>
+              <Icon name="lock" size={20} color={c.accent} />
+              <T v="small" color={c.onPanelMuted} style={{ flex: 1 }}>Have your 4-digit delivery code ready. It was sent to you by SMS. Only give it to the driver at the door.</T>
             </View>
           ) : null}
-          {finished ? <T v="small" color="#9A9AA1">Thanks for using MzigoFasta. This link no longer shows live location.</T> : null}
+          {finished ? <T v="small" color={c.onPanelMuted}>Thanks for using MzigoFasta. This link no longer shows live location.</T> : null}
 
           <Button label="Need help? WhatsApp support" icon="chat" variant="light" onPress={() => Linking.openURL("https://wa.me/255700000000")} />
         </Sheet>

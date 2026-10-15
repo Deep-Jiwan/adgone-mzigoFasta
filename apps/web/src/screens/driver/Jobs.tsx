@@ -23,7 +23,7 @@ export function Jobs() {
     <Screen bottomPad={96}>
       <Row justify="space-between" style={{ paddingTop: 6 }}>
         <Row gap={12}><Avatar name={me.name} size={46} /><View><Muted>Habari,</Muted><T v="h2" weight="600">{me.name.split(" ")[0]}</T></View></Row>
-        <Row gap={6} style={{ backgroundColor: c.surface, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20 }}><Icon name="star" size={15} color={c.orange} fill={c.orange} /><T v="small" weight="600">{me.rating}</T></Row>
+        <Row gap={6} style={{ backgroundColor: c.surface, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20 }}><Icon name="star" size={15} color={c.accent} fill={c.accent} /><T v="small" weight="600">{me.rating}</T></Row>
       </Row>
 
       <Card dark style={{ gap: 14 }}>
@@ -42,10 +42,10 @@ export function Jobs() {
       </Card>
 
       {active ? (
-        <Card onPress={() => nav(`/driver/job/${active.id}`)} style={{ backgroundColor: c.orangeSoft, flexDirection: "row", alignItems: "center", gap: 12 }}>
-          <Icon name="nav" size={22} color={c.orangeDeep} />
+        <Card onPress={() => nav(`/driver/job/${active.id}`)} style={{ backgroundColor: c.accentSoft, flexDirection: "row", alignItems: "center", gap: 12 }}>
+          <Icon name="nav" size={22} color={c.accentDeep} />
           <View style={{ flex: 1 }}><T v="body" weight="600">Job in progress · {active.id}</T><Muted>{active.pickup.area} → {active.dropoff.area}</Muted></View>
-          <Icon name="chevron" size={18} color={c.orangeDeep} />
+          <Icon name="chevron" size={18} color={c.accentDeep} />
         </Card>
       ) : null}
 
@@ -67,10 +67,10 @@ export function Jobs() {
                 </Row>
                 <Row gap={8} style={{ flexWrap: "wrap" }}>
                   <Badge tone="neutral">{d.item}</Badge>
-                  <Badge tone="orange">Cash from {d.payer === "recipient" ? "recipient" : "sender"}</Badge>
+                  <Badge tone="accent">Cash from {d.payer === "recipient" ? "recipient" : "sender"}</Badge>
                   <Badge tone="neutral">Fee {money(d.commission)}</Badge>
                 </Row>
-                <Button label={lowWallet ? "Top up wallet to accept" : active ? "Finish your current job first" : "Accept job"} variant={lowWallet || active ? "light" : "orange"} disabled={lowWallet || !!active} onPress={() => accept(d)} />
+                <Button label={lowWallet ? "Top up wallet to accept" : active ? "Finish your current job first" : "Accept job"} variant={lowWallet || active ? "light" : "accent"} disabled={lowWallet || !!active} onPress={() => accept(d)} />
               </View>
             </Card>
           );

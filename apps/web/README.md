@@ -12,12 +12,15 @@ pnpm --filter @mzigo/web build      # → dist/
 pnpm --filter @mzigo/web deploy     # Cloudflare Pages (needs `wrangler login`)
 ```
 
+Themes: `?theme=classic|pwani|usiku|savanna` (see docs/DESIGN.md).
+
 Routes: `/` role picker · `/customer` · `/driver` · `/t/:token` (public link) · `/admin`.
 
 ## Layout
 
 ```
-src/theme.ts            design tokens (colours, radii, shadows)
+src/themes.ts           the four themes (palette + nav/stepper/card style + fonts)
+src/theme.ts            picks the active theme; exports c (colours), radius, shadow, font
 src/ui/                 kit (text, buttons, cards, stepper), icons, art, MapView, phone frame, nav
 src/data/model.ts       types, places, settings + pricing/fee maths, seed data
 src/data/store.tsx      in-memory store shared by all roles; uses the real state machine from @mzigo/contracts

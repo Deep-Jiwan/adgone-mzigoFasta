@@ -28,11 +28,11 @@ export function AdminLayout() {
     return (
       <Pressable
         key={n.to} onPress={() => nav(n.to)}
-        style={{ flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 14, paddingVertical: 12, borderRadius: 16, backgroundColor: on ? c.sheet2 : "transparent", cursor: "pointer" }}
+        style={{ flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 14, paddingVertical: 12, borderRadius: 16, backgroundColor: on ? c.sideActive : "transparent", cursor: "pointer" }}
       >
-        <Icon name={n.icon} size={19} color={on ? c.orange : "#9A9AA1"} />
-        <T v="small" color={on ? "#fff" : "#B5B5BB"} weight={on ? "600" : "500"}>{n.label}</T>
-        {n.to === "/admin/safety" && alerts ? <View style={{ marginLeft: "auto" }}><Badge tone="orange">{alerts}</Badge></View> : null}
+        <Icon name={n.icon} size={19} color={on ? c.accent : c.onSideMuted} />
+        <T v="small" color={on ? c.onSide : c.onSideMuted} weight={on ? "600" : "500"}>{n.label}</T>
+        {n.to === "/admin/safety" && alerts ? <View style={{ marginLeft: "auto" }}><Badge tone="accent">{alerts}</Badge></View> : null}
       </Pressable>
     );
   });
@@ -40,26 +40,26 @@ export function AdminLayout() {
   if (!desktop) {
     return (
       <View style={{ flex: 1 }}>
-        <Row justify="space-between" style={{ backgroundColor: c.ink, padding: 14 }}>
-          <Pressable onPress={() => nav("/")}><T v="h2" color="#fff" weight="600">MzigoFasta Admin</T></Pressable>
+        <Row justify="space-between" style={{ backgroundColor: c.side, padding: 14 }}>
+          <Pressable onPress={() => nav("/")}><T v="h2" color={c.onSide} weight="600">MzigoFasta Admin</T></Pressable>
           <Avatar name="Ops Desk" size={32} />
         </Row>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexGrow: 0, backgroundColor: c.ink }} contentContainerStyle={{ paddingHorizontal: 8, paddingBottom: 10, gap: 4 }}>{items}</ScrollView>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexGrow: 0, backgroundColor: c.side }} contentContainerStyle={{ paddingHorizontal: 8, paddingBottom: 10, gap: 4 }}>{items}</ScrollView>
         <View style={{ flex: 1 }}><Outlet /></View>
       </View>
     );
   }
   return (
     <View style={{ flex: 1, flexDirection: "row" }}>
-      <View style={{ width: 252, backgroundColor: c.ink, padding: 18, gap: 6 }}>
+      <View style={{ width: 252, backgroundColor: c.side, padding: 18, gap: 6, borderRightWidth: 1, borderRightColor: c.line }}>
         <Pressable onPress={() => nav("/")} style={{ flexDirection: "row", alignItems: "center", gap: 10, paddingHorizontal: 6, paddingBottom: 22, paddingTop: 6, cursor: "pointer" }}>
-          <View style={{ width: 36, height: 36, borderRadius: 12, backgroundColor: c.orange, alignItems: "center", justifyContent: "center" }}><Icon name="truck" size={20} color="#fff" /></View>
-          <View><T v="h2" color="#fff" weight="600">MzigoFasta</T><T v="tiny" color="#9A9AA1">Admin · Dar es Salaam</T></View>
+          <View style={{ width: 36, height: 36, borderRadius: 12, backgroundColor: c.accent, alignItems: "center", justifyContent: "center" }}><Icon name="truck" size={20} color={c.onAccent} /></View>
+          <View><T v="h2" color={c.onSide} weight="600">MzigoFasta</T><T v="tiny" color={c.onSideMuted}>Admin · Dar es Salaam</T></View>
         </Pressable>
         {items}
         <View style={{ flex: 1 }} />
-        <Row gap={10} style={{ backgroundColor: c.sheet, borderRadius: 18, padding: 12 }}>
-          <Avatar name="Ops Desk" size={36} /><View style={{ flex: 1 }}><T v="small" color="#fff" weight="600">Ops Desk</T><Muted v="tiny">Super admin</Muted></View>
+        <Row gap={10} style={{ backgroundColor: c.sideActive, borderRadius: 18, padding: 12 }}>
+          <Avatar name="Ops Desk" size={36} /><View style={{ flex: 1 }}><T v="small" color={c.onSide} weight="600">Ops Desk</T><Muted v="tiny">Super admin</Muted></View>
         </Row>
       </View>
       <View style={{ flex: 1 }}><Outlet /></View>

@@ -23,7 +23,7 @@ export function AdminWallets() {
     <Page title="Wallets & cash" sub="Drivers keep the customer cash. Their wallet only pays the platform fee.">
       <Row gap={14} style={{ flexWrap: "wrap" }}>
         <Stat label="Driver wallet float" value={money(float)} sub="owed back on request" />
-        <Stat label="Platform fees collected" value={money(fees)} sub="charged on delivery" tone="orange" />
+        <Stat label="Platform fees collected" value={money(fees)} sub="charged on delivery" tone="accent" />
         <Stat label="Held for open jobs" value={money(holds)} sub="released if cancelled" tone="amber" />
       </Row>
       <SplitView
@@ -35,7 +35,7 @@ export function AdminWallets() {
               { title: "Driver", flex: 1.4, render: (l) => <T v="small" weight="500">{drivers.find((d) => d.id === l.driverId)?.name}</T> },
               { title: "Type", width: 110, render: (l) => <Badge tone={KIND[l.kind]}>{l.kind}</Badge> },
               { title: "Reference", flex: 1, render: (l) => <Muted>{l.ref}</Muted> },
-              { title: "Amount", width: 110, align: "flex-end", render: (l) => <T v="small" weight="600" color={l.amount >= 0 ? c.green : c.ink}>{l.amount >= 0 ? "+" : "−"}{money(Math.abs(l.amount))}</T> },
+              { title: "Amount", width: 110, align: "flex-end", render: (l) => <T v="small" weight="600" color={l.amount >= 0 ? c.green : c.text}>{l.amount >= 0 ? "+" : "−"}{money(Math.abs(l.amount))}</T> },
             ]}
           />
         }
@@ -46,7 +46,7 @@ export function AdminWallets() {
             <Row gap={8} style={{ flexWrap: "wrap" }}>{approved.map((d) => <Chip key={d.id} label={d.name.split(" ")[0]!} active={driverId === d.id} onPress={() => setDriverId(d.id)} />)}</Row>
             <Field label="Amount (TZS)" value={amount} onChangeText={setAmount} keyboardType="numeric" />
             <Field label="Receipt / reference" value={ref} onChangeText={setRef} placeholder="OPS-CASH-0934" />
-            <Button label="Credit wallet" variant="orange" disabled={!Number(amount)} onPress={() => { deposit(driverId, Number(amount), ref); setDone(`Credited ${money(Number(amount))}`); setRef(""); }} />
+            <Button label="Credit wallet" variant="accent" disabled={!Number(amount)} onPress={() => { deposit(driverId, Number(amount), ref); setDone(`Credited ${money(Number(amount))}`); setRef(""); }} />
             {done ? <View><Badge tone="green">{done}</Badge></View> : null}
           </Card>
         }

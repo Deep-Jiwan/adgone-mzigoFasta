@@ -54,7 +54,7 @@ export function AdminDeliveries() {
                 <Row justify="space-between"><Muted>Platform fee</Muted><T v="small" weight="500">{money(d.commission)}</T></Row>
                 <Divider />
                 <T v="small" weight="600">Timeline</T>
-                {d.timeline.map((t, i) => <Row key={i} gap={10}><View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: i === d.timeline.length - 1 ? c.orange : c.line }} /><T v="small" style={{ flex: 1 }}>{STATUS_LABEL[t.status]}</T><Muted>{t.at}</Muted></Row>)}
+                {d.timeline.map((t, i) => <Row key={i} gap={10}><View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: i === d.timeline.length - 1 ? c.accent : c.line }} /><T v="small" style={{ flex: 1 }}>{STATUS_LABEL[t.status]}</T><Muted>{t.at}</Muted></Row>)}
                 <Divider />
                 <Row gap={8} style={{ flexWrap: "wrap" }}>
                   <Button label="Open public link" variant="light" small full={false} icon="link" onPress={() => window.open(`/t/${d.token}`, "_blank")} />

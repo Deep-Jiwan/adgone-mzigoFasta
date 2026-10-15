@@ -120,8 +120,8 @@ export const STATUS_LABEL: Record<DeliveryStatus, string> = {
   OPEN: "Finding driver", ACCEPTED: "Driver on the way", AT_PICKUP: "At pickup", PICKED_UP: "In transit", AT_DROPOFF: "At drop-off",
   DELIVERED: "Delivered", CLOSED: "Delivered", EXPIRED: "Expired", CANCELLED: "Cancelled", RETURNING: "Returning", RETURNED: "Returned",
 };
-export const STATUS_TONE: Record<DeliveryStatus, "neutral" | "orange" | "green" | "red" | "blue" | "amber"> = {
-  OPEN: "amber", ACCEPTED: "blue", AT_PICKUP: "blue", PICKED_UP: "orange", AT_DROPOFF: "orange", DELIVERED: "green", CLOSED: "green",
+export const STATUS_TONE: Record<DeliveryStatus, "neutral" | "accent" | "green" | "red" | "blue" | "amber"> = {
+  OPEN: "amber", ACCEPTED: "blue", AT_PICKUP: "blue", PICKED_UP: "accent", AT_DROPOFF: "accent", DELIVERED: "green", CLOSED: "green",
   EXPIRED: "neutral", CANCELLED: "red", RETURNING: "red", RETURNED: "neutral",
 };
 

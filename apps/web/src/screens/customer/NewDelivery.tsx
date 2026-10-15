@@ -16,8 +16,8 @@ function PlacePicker({ label, value, onPick, tone }: { label: string; value?: Pl
   return (
     <View style={{ gap: 8 }}>
       <Pressable onPress={() => setOpen(!open)} style={{ flexDirection: "row", alignItems: "center", gap: 12, cursor: "pointer" }}>
-        <View style={{ width: 28, height: 28, borderRadius: 14, alignItems: "center", justifyContent: "center", backgroundColor: tone === "from" ? "#fff" : c.orangeSoft, borderWidth: tone === "from" ? 3 : 0, borderColor: c.ink }}>
-          {tone === "to" ? <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: c.orange }} /> : null}
+        <View style={{ width: 28, height: 28, borderRadius: 14, alignItems: "center", justifyContent: "center", backgroundColor: tone === "from" ? c.surface : c.accentSoft, borderWidth: tone === "from" ? 3 : 0, borderColor: c.text }}>
+          {tone === "to" ? <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: c.accent }} /> : null}
         </View>
         <View style={{ flex: 1 }}>
           <Muted v="tiny">{label}</Muted>
@@ -82,7 +82,7 @@ export function NewDelivery() {
       <ScrollView contentContainerStyle={{ padding: 16, gap: 14, paddingBottom: 150 }} showsVerticalScrollIndicator={false}>
         <Card style={{ gap: 14 }}>
           <PlacePicker label="Pickup" tone="from" value={pickup} onPick={setPickup} />
-          <View style={{ height: 14, borderLeftWidth: 2, borderStyle: "dotted", borderColor: c.orange, marginLeft: 13, marginVertical: -6 }} />
+          <View style={{ height: 14, borderLeftWidth: 2, borderStyle: "dotted", borderColor: c.accent, marginLeft: 13, marginVertical: -6 }} />
           <PlacePicker label="Drop-off" tone="to" value={dropoff} onPick={setDropoff} />
           {km ? <Row gap={6}><Icon name="map" size={16} color={c.slate} /><Muted>{km} km · about {etaMinutes(settings, vehicle, km)} min</Muted></Row> : null}
         </Card>
@@ -112,9 +112,9 @@ export function NewDelivery() {
             return (
               <Pressable
                 key={k} onPress={() => !tooHeavy && setVehicle(k)}
-                style={{ flexDirection: "row", alignItems: "center", gap: 12, padding: 12, borderRadius: radius.md, borderWidth: 2, borderColor: sel ? c.ink : c.line, opacity: tooHeavy ? 0.45 : 1, cursor: "pointer" }}
+                style={{ flexDirection: "row", alignItems: "center", gap: 12, padding: 12, borderRadius: radius.md, borderWidth: 2, borderColor: sel ? c.selected : c.line, opacity: tooHeavy ? 0.45 : 1, cursor: "pointer" }}
               >
-                <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: sel ? c.ink : c.canvas, alignItems: "center", justifyContent: "center" }}><Icon name={VEHICLE_ICON[k]} size={22} color={sel ? "#fff" : c.ink} /></View>
+                <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: sel ? c.selected : c.canvas, alignItems: "center", justifyContent: "center" }}><Icon name={VEHICLE_ICON[k]} size={22} color={sel ? c.onSelected : c.text} /></View>
                 <View style={{ flex: 1 }}><T v="body" weight="600">{v.label}</T><Muted v="tiny">{tooHeavy ? `Too heavy (max ${v.maxKg} kg)` : v.hint}</Muted></View>
                 <View style={{ alignItems: "flex-end" }}>
                   <T v="body" weight="600">{km ? money(quote(settings, k, km)) : "—"}</T>
@@ -159,7 +159,7 @@ export function NewDelivery() {
       <View style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: 16, paddingBottom: 22, backgroundColor: c.ink, borderTopLeftRadius: 28, borderTopRightRadius: 28, gap: 12 }}>
         <Row justify="space-between">
           <View><Muted v="tiny">Total, paid in cash</Muted><T v="title" color="#fff">{km ? money(total) : "—"}</T></View>
-          <View style={{ flex: 1, maxWidth: 190 }}><Button label="Request driver" variant="orange" disabled={!valid} onPress={submit} /></View>
+          <View style={{ flex: 1, maxWidth: 190 }}><Button label="Request driver" variant="accent" disabled={!valid} onPress={submit} /></View>
         </Row>
       </View>
     </View>

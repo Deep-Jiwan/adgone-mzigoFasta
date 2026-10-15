@@ -25,7 +25,7 @@ export function AdminSettings() {
     <Page
       title="Settings"
       sub="Everything below is a setting, not code. Changes apply to new requests straight away."
-      actions={<Row gap={10}>{dirty ? <Button label="Discard" variant="light" small full={false} onPress={() => setS(structuredClone(settings))} /> : null}<Button label="Save changes" variant="orange" small full={false} disabled={!dirty} onPress={() => { saveSettings(s); toast.show("Saved. New requests use these settings."); }} /></Row>}
+      actions={<Row gap={10}>{dirty ? <Button label="Discard" variant="light" small full={false} onPress={() => setS(structuredClone(settings))} /> : null}<Button label="Save changes" variant="accent" small full={false} disabled={!dirty} onPress={() => { saveSettings(s); toast.show("Saved. New requests use these settings."); }} /></Row>}
     >
       {toast.node}
 
@@ -35,8 +35,8 @@ export function AdminSettings() {
           {MODES.map((m) => {
             const on = s.pricingMode === m.key;
             return (
-              <Pressable key={m.key} onPress={() => set((d) => { d.pricingMode = m.key; })} style={{ flexGrow: 1, flexBasis: 240, padding: 16, borderRadius: radius.lg, borderWidth: 2, borderColor: on ? c.ink : c.line, gap: 6, cursor: "pointer", backgroundColor: on ? c.paper : c.surface }}>
-                <Row justify="space-between"><T v="body" weight="600">{m.title}</T>{on ? <Icon name="check" size={18} color={c.orange} strokeWidth={3} /> : null}</Row>
+              <Pressable key={m.key} onPress={() => set((d) => { d.pricingMode = m.key; })} style={{ flexGrow: 1, flexBasis: 240, padding: 16, borderRadius: radius.lg, borderWidth: 2, borderColor: on ? c.selected : c.line, gap: 6, cursor: "pointer", backgroundColor: on ? c.paper : c.surface }}>
+                <Row justify="space-between"><T v="body" weight="600">{m.title}</T>{on ? <Icon name="check" size={18} color={c.accent} strokeWidth={3} /> : null}</Row>
                 <Muted>{m.body}</Muted>
               </Pressable>
             );
@@ -78,7 +78,7 @@ export function AdminSettings() {
         </View>
         {s.commission.mode !== "fixed" ? <SettingRow title="Percentage of the delivery price"><NumInput value={s.commission.percent} suffix="%" onChange={(n) => set((d) => { d.commission.percent = Math.min(50, n); })} /></SettingRow> : null}
         {s.commission.mode !== "percent" ? <SettingRow title="Fixed fee per job"><NumInput value={s.commission.fixed} suffix="TZS" onChange={(n) => set((d) => { d.commission.fixed = n; })} width={150} /></SettingRow> : null}
-        <Badge tone="orange">A TZS 10,000 boda job costs the driver {money(commissionFor(s, 10000))}</Badge>
+        <Badge tone="accent">A TZS 10,000 boda job costs the driver {money(commissionFor(s, 10000))}</Badge>
       </Card>
 
       <Card style={{ gap: 4 }}>

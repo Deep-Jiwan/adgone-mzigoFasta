@@ -35,21 +35,21 @@ export function Chat() {
   return (
     <View style={{ flex: 1, backgroundColor: c.paper }}>
       <Row gap={12} style={{ padding: 16, paddingTop: 20 }}>
-        <RoundButton icon="back" bg={c.surface} fg={c.ink} size={44} onPress={() => nav(-1)} />
+        <RoundButton icon="back" bg={c.surface} fg={c.text} size={44} onPress={() => nav(-1)} />
         <Avatar name={driver?.name ?? "Driver"} size={46} />
         <View style={{ flex: 1 }}>
           <T v="h2" weight="600">{driver?.name ?? "Driver"}</T>
           <T v="small" color={c.muted}>Courier — {d?.pickup.area} → {d?.dropoff.area}</T>
           <Row gap={6}><View style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: c.green }} /><T v="tiny" color={c.slate}>Active now</T></Row>
         </View>
-        <RoundButton icon="phone" bg={c.canvas} fg={c.ink} />
+        <RoundButton icon="phone" bg={c.canvas} fg={c.text} />
       </Row>
 
       <ScrollView ref={scroller} contentContainerStyle={{ padding: 16, gap: 14 }} style={{ flex: 1 }}>
         {msgs.map((m) => (
           <View key={m.id} style={{ alignItems: m.mine ? "flex-end" : "flex-start", gap: 4 }}>
             <View style={{ maxWidth: "78%", backgroundColor: m.mine ? c.ink : c.canvas, paddingHorizontal: 16, paddingVertical: 12, borderRadius: 22, borderBottomRightRadius: m.mine ? 6 : 22, borderBottomLeftRadius: m.mine ? 22 : 6 }}>
-              <T v="body" color={m.mine ? "#fff" : c.ink}>{m.text}</T>
+              <T v="body" color={m.mine ? "#fff" : c.text}>{m.text}</T>
             </View>
             <T v="tiny" color={c.muted}>{m.at}</T>
           </View>

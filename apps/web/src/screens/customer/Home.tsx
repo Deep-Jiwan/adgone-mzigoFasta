@@ -26,7 +26,7 @@ export function CustomerHome() {
           <View style={{ width: 46, height: 46, borderRadius: 23, backgroundColor: c.surface, alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: c.line }}><Icon name="truck" size={22} /></View>
           <View><Muted>Delivering for</Muted><T v="body" weight="500">{me.business}</T></View>
         </Row>
-        <RoundButton icon="bell" bg={c.surface} fg={c.ink} badge={3} />
+        <RoundButton icon="bell" bg={c.surface} fg={c.text} badge={3} />
       </Row>
 
       <Row>
@@ -34,7 +34,7 @@ export function CustomerHome() {
           <Icon name="search" size={20} color={c.muted} />
           <TextInput
             value={q} onChangeText={setQ} placeholder="Search by ID or item" placeholderTextColor={c.muted}
-            style={[{ flex: 1, fontSize: 15, minWidth: 0, color: c.ink }, noOutline]}
+            style={[{ flex: 1, fontSize: 15, minWidth: 0, color: c.text }, noOutline]}
           />
         </Row>
         <RoundButton icon="scan" size={56} onPress={() => nav("/customer/track")} />
@@ -63,7 +63,7 @@ export function CustomerHome() {
               <BoxArt size={80} />
               <T v="h2">No active deliveries</T>
               <Muted>Request one and watch the driver come to you.</Muted>
-              <Pressable onPress={() => nav("/customer/new")} style={{ backgroundColor: c.ink, borderRadius: radius.pill, paddingHorizontal: 22, paddingVertical: 12, cursor: "pointer" }}><T v="small" color="#fff" weight="600">Request a delivery</T></Pressable>
+              <Pressable onPress={() => nav("/customer/new")} style={{ backgroundColor: c.selected, borderRadius: radius.pill, paddingHorizontal: 22, paddingVertical: 12, cursor: "pointer" }}><T v="small" color={c.onSelected} weight="600">Request a delivery</T></Pressable>
             </Card>
           )}
 

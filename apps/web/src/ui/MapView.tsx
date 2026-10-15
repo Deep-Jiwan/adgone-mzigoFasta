@@ -7,7 +7,7 @@ import { c } from "../theme";
 // Swap this component for MapLibre / Google Maps once the provider is chosen (Q-21); the props stay the same.
 
 export interface LatLng { lat: number; lng: number }
-export interface MapMarker extends LatLng { tone?: "dark" | "orange" | "green" | "grey"; id?: string }
+export interface MapMarker extends LatLng { tone?: "dark" | "accent" | "green" | "grey"; id?: string }
 interface Props {
   pickup?: LatLng; dropoff?: LatLng; markers?: MapMarker[];
   phase?: "toPickup" | "toDropoff" | "none"; leg?: number;
@@ -75,7 +75,7 @@ export function MapView({ pickup, dropoff, markers = [], phase = "none", leg = 0
   if (phase === "toDropoff" && route) driver = pointAt(route, leg);
   if (phase === "toPickup" && toPickup) driver = pointAt(toPickup, leg);
 
-  const tone = { dark: c.ink, orange: c.orange, green: c.green, grey: "#9AA0A6" };
+  const tone = { dark: c.markerFill, accent: c.accent, green: c.green, grey: "#9AA0A6" };
 
   return (
     <View style={{ height: height as number, overflow: "hidden", borderRadius: rounded, backgroundColor: c.mapLand }}>
@@ -84,22 +84,22 @@ export function MapView({ pickup, dropoff, markers = [], phase = "none", leg = 0
         <Path d={scene.water} fill={c.mapWater} />
         {scene.parks.map((p, i) => <Rect key={i} x={p.x} y={p.y} width={p.w} height={p.h} rx={8} fill={c.mapPark} />)}
         {scene.roads.map((p, i) => <Path key={i} d={p} stroke={c.mapRoad} strokeWidth={5} fill="none" />)}
-        {scene.arterials.map((p, i) => <Path key={`a${i}`} d={p} stroke="#fff" strokeWidth={9} fill="none" />)}
+        {scene.arterials.map((p, i) => <Path key={`a${i}`} d={p} stroke={c.mapRoad} strokeWidth={9} fill="none" />)}
         {route ? (
           <>
-            <Path d={d(route)} stroke="#B9BDC2" strokeWidth={6} fill="none" strokeLinejoin="round" strokeLinecap="round" />
-            {phase === "toDropoff" && driver ? <Path d={d(route)} stroke={c.ink} strokeWidth={4} fill="none" strokeLinejoin="round" strokeLinecap="round" /> : null}
+            <Path d={d(route)} stroke={c.routeIdle} strokeWidth={6} fill="none" strokeLinejoin="round" strokeLinecap="round" />
+            {phase === "toDropoff" && driver ? <Path d={d(route)} stroke={c.routeActive} strokeWidth={4} fill="none" strokeLinejoin="round" strokeLinecap="round" /> : null}
           </>
         ) : null}
-        {toPickup && phase === "toPickup" ? <Path d={d(toPickup)} stroke={c.ink} strokeWidth={4} strokeDasharray="2 7" fill="none" strokeLinecap="round" strokeLinejoin="round" /> : null}
-        {markers.map((m, i) => { const p = proj(m); return <G key={m.id ?? i}><Circle cx={p.x} cy={p.y} r={11} fill={tone[m.tone ?? "dark"]} opacity={0.16} /><Circle cx={p.x} cy={p.y} r={5.5} fill={tone[m.tone ?? "dark"]} stroke="#fff" strokeWidth={2} /></G>; })}
-        {A ? <G><Circle cx={A.x} cy={A.y} r={9} fill="#fff" stroke={c.ink} strokeWidth={3} /></G> : null}
-        {B ? <G><Circle cx={B.x} cy={B.y} r={22} fill={c.orange} opacity={0.18} /><Circle cx={B.x} cy={B.y} r={12} fill={c.orange} opacity={0.35} /><Circle cx={B.x} cy={B.y} r={6.5} fill={c.orange} stroke="#fff" strokeWidth={2.5} /></G> : null}
+        {toPickup && phase === "toPickup" ? <Path d={d(toPickup)} stroke={c.routeActive} strokeWidth={4} strokeDasharray="2 7" fill="none" strokeLinecap="round" strokeLinejoin="round" /> : null}
+        {markers.map((m, i) => { const p = proj(m); return <G key={m.id ?? i}><Circle cx={p.x} cy={p.y} r={11} fill={tone[m.tone ?? "dark"]} opacity={0.16} /><Circle cx={p.x} cy={p.y} r={5.5} fill={tone[m.tone ?? "dark"]} stroke={c.markerRing} strokeWidth={2} /></G>; })}
+        {A ? <G><Circle cx={A.x} cy={A.y} r={9} fill={c.markerRing} stroke={c.routeActive} strokeWidth={3} /></G> : null}
+        {B ? <G><Circle cx={B.x} cy={B.y} r={22} fill={c.accent} opacity={0.18} /><Circle cx={B.x} cy={B.y} r={12} fill={c.accent} opacity={0.35} /><Circle cx={B.x} cy={B.y} r={6.5} fill={c.accent} stroke={c.markerRing} strokeWidth={2.5} /></G> : null}
         {driver ? (
           <G transform={`translate(${driver.p.x} ${driver.p.y})`}>
             <Circle r={20} fill="#000" opacity={0.08} />
-            <Circle r={15} fill={c.ink} stroke="#fff" strokeWidth={3} />
-            <G transform={`rotate(${driver.angle})`}><Polygon points="0,-7 5.5,6 0,3 -5.5,6" fill="#fff" /></G>
+            <Circle r={15} fill={c.markerFill} stroke={c.markerRing} strokeWidth={3} />
+            <G transform={`rotate(${driver.angle})`}><Polygon points="0,-7 5.5,6 0,3 -5.5,6" fill={c.markerFg} /></G>
           </G>
         ) : null}
       </Svg>

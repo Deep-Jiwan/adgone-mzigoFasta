@@ -1,3 +1,4 @@
+import { c } from "../theme";
 import { Circle, Defs, G, LinearGradient, Path, Rect, Stop, Svg } from "./svg";
 
 // Simple flat illustrations in the spirit of the reference's 3D parcel and truck (drawn here, not copied).
@@ -26,7 +27,7 @@ export function TruckArt({ size = 120 }: { size?: number }) {
     <Svg width={size} height={size} viewBox="0 0 120 120">
       <Defs>
         <LinearGradient id="tr1" x1="0" y1="0" x2="1" y2="1">
-          <Stop offset="0" stopColor="#F26B4F" /><Stop offset="1" stopColor="#D2442E" />
+          <Stop offset="0" stopColor={c.artA} /><Stop offset="1" stopColor={c.artB} />
         </LinearGradient>
         <LinearGradient id="tr2" x1="0" y1="0" x2="1" y2="1">
           <Stop offset="0" stopColor="#F6C777" /><Stop offset="1" stopColor="#E4A24C" />

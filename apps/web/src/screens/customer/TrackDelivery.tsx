@@ -31,9 +31,9 @@ export function TrackDelivery() {
       <View>
         <MapView pickup={d.pickup} dropoff={d.dropoff} phase={phase} leg={d.leg} height={340} seed={d.id} />
         <Row justify="space-between" style={{ position: "absolute", top: 16, left: 16, right: 16 }}>
-          <RoundButton icon="back" bg="#fff" fg={c.ink} size={44} onPress={() => nav(-1)} />
-          <View style={{ backgroundColor: "rgba(255,255,255,0.92)", paddingHorizontal: 16, paddingVertical: 10, borderRadius: 22 }}><T v="h2">Location Tracking</T></View>
-          <RoundButton icon="share" bg="#fff" fg={c.ink} size={44} onPress={copy} />
+          <RoundButton icon="back" bg={c.surface} fg={c.text} size={44} onPress={() => nav(-1)} />
+          <View style={{ backgroundColor: c.surface, paddingHorizontal: 16, paddingVertical: 10, borderRadius: 22 }}><T v="h2">Location Tracking</T></View>
+          <RoundButton icon="share" bg={c.surface} fg={c.text} size={44} onPress={copy} />
         </Row>
         {phase !== "none" ? (
           <View style={{ position: "absolute", right: 16, bottom: 44, backgroundColor: c.ink, paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20 }}>
@@ -45,47 +45,47 @@ export function TrackDelivery() {
 
       <Sheet>
         <Row justify="space-between" align="flex-start">
-          <View><T v="small" color="#9A9AA1">Booking Id</T><T v="display" color="#fff" style={{ fontSize: 28 }}>{d.id}</T></View>
-          <View style={{ alignItems: "flex-end", gap: 6 }}><T v="small" color="#9A9AA1">Status</T><Badge tone={STATUS_TONE[d.status]}>{STATUS_LABEL[d.status]}</Badge></View>
+          <View><T v="small" color={c.onPanelMuted}>Booking Id</T><T v="display" color={c.onPanel} style={{ fontSize: 28 }}>{d.id}</T></View>
+          <View style={{ alignItems: "flex-end", gap: 6 }}><T v="small" color={c.onPanelMuted}>Status</T><Badge tone={STATUS_TONE[d.status]}>{STATUS_LABEL[d.status]}</Badge></View>
         </Row>
         <DotStepper steps={5} done={Math.max(0, idx - 1)} truckAt={idx < 5 ? idx - 1 : undefined} dark />
         <Row justify="space-between">
-          <View><T v="small" color="#9A9AA1">Created, {d.createdLabel}</T><T v="body" color="#fff" weight="500">{d.pickup.area}</T></View>
-          <View style={{ alignItems: "flex-end" }}><T v="small" color="#9A9AA1">{d.status === "DELIVERED" || d.status === "CLOSED" ? "Delivered" : `ETA ${left || total} min`}</T><T v="body" color="#fff" weight="500">{d.dropoff.area}</T></View>
+          <View><T v="small" color={c.onPanelMuted}>Created, {d.createdLabel}</T><T v="body" color={c.onPanel} weight="500">{d.pickup.area}</T></View>
+          <View style={{ alignItems: "flex-end" }}><T v="small" color={c.onPanelMuted}>{d.status === "DELIVERED" || d.status === "CLOSED" ? "Delivered" : `ETA ${left || total} min`}</T><T v="body" color={c.onPanel} weight="500">{d.dropoff.area}</T></View>
         </Row>
         <Divider dark />
 
         {d.status === "OPEN" ? (
-          <View style={{ backgroundColor: c.sheet2, borderRadius: 20, padding: 16, gap: 6 }}>
-            <Row gap={10}><Icon name="search" size={18} color={c.orange} /><T v="body" color="#fff" weight="600">Finding a {settings.vehicles[d.vehicle].label.toLowerCase()} driver nearby…</T></Row>
-            <T v="small" color="#9A9AA1">Offers go to the nearest drivers first. Open the Driver view to accept this job.</T>
+          <View style={{ backgroundColor: c.panel2, borderRadius: 20, padding: 16, gap: 6 }}>
+            <Row gap={10}><Icon name="search" size={18} color={c.accent} /><T v="body" color={c.onPanel} weight="600">Finding a {settings.vehicles[d.vehicle].label.toLowerCase()} driver nearby…</T></Row>
+            <T v="small" color={c.onPanelMuted}>Offers go to the nearest drivers first. Open the Driver view to accept this job.</T>
           </View>
         ) : driver ? (
-          <Row gap={12} style={{ backgroundColor: c.sheet2, borderRadius: 24, padding: 12 }}>
+          <Row gap={12} style={{ backgroundColor: c.panel2, borderRadius: 24, padding: 12 }}>
             <Avatar name={driver.name} size={48} ring />
-            <View style={{ flex: 1 }}><T v="body" color="#fff" weight="600">{driver.name}</T><T v="small" color="#9A9AA1">Courier · {settings.vehicles[driver.vehicle].label} · {driver.plate}</T></View>
-            <RoundButton icon="phone" bg={c.orange} fg="#fff" />
-            <RoundButton icon="chat" bg="#fff" fg={c.ink} onPress={() => nav(`/customer/chat/${d.id}`)} />
+            <View style={{ flex: 1 }}><T v="body" color={c.onPanel} weight="600">{driver.name}</T><T v="small" color={c.onPanelMuted}>Courier · {settings.vehicles[driver.vehicle].label} · {driver.plate}</T></View>
+            <RoundButton icon="phone" bg={c.accent} />
+            <RoundButton icon="chat" bg={c.onPanel} fg={c.panel} onPress={() => nav(`/customer/chat/${d.id}`)} />
           </Row>
         ) : null}
 
         <Row gap={12} align="flex-start">
           <View style={{ flex: 1, gap: 14 }}>
-            <View><T v="small" color="#9A9AA1">From</T><T v="body" color="#fff" weight="500">{d.pickup.name}</T></View>
-            <View><T v="small" color="#9A9AA1">Recipient</T><T v="body" color="#fff" weight="500">{d.recipientName}</T></View>
-            <View><T v="small" color="#9A9AA1">Item</T><T v="body" color="#fff" weight="500">{d.item}</T></View>
+            <View><T v="small" color={c.onPanelMuted}>From</T><T v="body" color={c.onPanel} weight="500">{d.pickup.name}</T></View>
+            <View><T v="small" color={c.onPanelMuted}>Recipient</T><T v="body" color={c.onPanel} weight="500">{d.recipientName}</T></View>
+            <View><T v="small" color={c.onPanelMuted}>Item</T><T v="body" color={c.onPanel} weight="500">{d.item}</T></View>
           </View>
           <View style={{ flex: 1, gap: 14 }}>
-            <View><T v="small" color="#9A9AA1">To</T><T v="body" color="#fff" weight="500">{d.dropoff.name}</T></View>
-            <View><T v="small" color="#9A9AA1">{d.payer === "recipient" ? "Recipient pays driver (cash)" : "You pay driver (cash)"}</T><T v="body" color="#fff" weight="500">{money(d.price + d.tip)}</T></View>
-            <View><T v="small" color="#9A9AA1">Weight</T><T v="body" color="#fff" weight="500">{d.weightKg} kg · {settings.vehicles[d.vehicle].label}</T></View>
+            <View><T v="small" color={c.onPanelMuted}>To</T><T v="body" color={c.onPanel} weight="500">{d.dropoff.name}</T></View>
+            <View><T v="small" color={c.onPanelMuted}>{d.payer === "recipient" ? "Recipient pays driver (cash)" : "You pay driver (cash)"}</T><T v="body" color={c.onPanel} weight="500">{money(d.price + d.tip)}</T></View>
+            <View><T v="small" color={c.onPanelMuted}>Weight</T><T v="body" color={c.onPanel} weight="500">{d.weightKg} kg · {settings.vehicles[d.vehicle].label}</T></View>
           </View>
         </Row>
 
         {d.status !== "OPEN" && !TERMINAL.includes(d.status) ? (
-          <View style={{ backgroundColor: c.sheet2, borderRadius: 20, padding: 16, flexDirection: "row", alignItems: "center", gap: 14 }}>
-            <View style={{ flex: 1 }}><T v="small" color="#9A9AA1">Delivery code (sent to {d.recipientName} by SMS)</T><T v="small" color="#9A9AA1">The driver asks for it at the door.</T></View>
-            <T v="display" color={c.orange} style={{ letterSpacing: 6 }}>{d.code}</T>
+          <View style={{ backgroundColor: c.panel2, borderRadius: 20, padding: 16, flexDirection: "row", alignItems: "center", gap: 14 }}>
+            <View style={{ flex: 1 }}><T v="small" color={c.onPanelMuted}>Delivery code (sent to {d.recipientName} by SMS)</T><T v="small" color={c.onPanelMuted}>The driver asks for it at the door.</T></View>
+            <T v="display" color={c.accent} style={{ letterSpacing: 6 }}>{d.code}</T>
           </View>
         ) : null}
 

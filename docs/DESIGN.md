@@ -23,6 +23,23 @@ What we took from it:
 | Chat with the courier, quick-reply chips, rounded bubbles | Customer chat |
 | Palette: near-black `#060606`, warm off-white, orange `#E88E40` / `#D15F26`, slate `#667589` | `apps/web/src/theme.ts` |
 
+## Themes
+
+The whole UI reads from one theme (`apps/web/src/themes.ts`): a palette plus a few structural choices
+(navigation style, progress-stepper style, card edges, typefaces, radii). Four are built:
+
+| Theme | Idea |
+|---|---|
+| `classic` | The first build, closest to the Couriq reference (default) |
+| `pwani` | Apple-light: system blue, hairline cards, frosted tab bar, solid progress line, white tracking sheet |
+| `usiku` | Dark first: near-black, electric lime, segmented progress bar, dark map, Manrope |
+| `savanna` | Warm and editorial: cream, forest green, marigold, Fraunces titles, dock navigation |
+
+Pick one with `?theme=pwani|usiku|savanna|classic` (remembered in localStorage) or the chips in the
+desktop role switcher. Screens use semantic tokens (`accent`, `text`, `panel`, `selected`, ...) and
+never raw colours, so adding or tuning a theme only touches `themes.ts`. Fonts are self-hosted through
+`@fontsource-variable` packages.
+
 ## Roles
 
 | Role | Route | Layout | What it does |

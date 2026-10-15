@@ -56,7 +56,7 @@ export function ActiveJob() {
       <View>
         <MapView pickup={d.pickup} dropoff={d.dropoff} phase={phase} leg={d.leg} height={300} seed={d.id} />
         <Row justify="space-between" style={{ position: "absolute", top: 16, left: 16, right: 16 }}>
-          <RoundButton icon="back" bg="#fff" fg={c.ink} size={44} onPress={() => nav("/driver")} />
+          <RoundButton icon="back" bg={c.surface} fg={c.text} size={44} onPress={() => nav("/driver")} />
           <Badge tone={STATUS_TONE[d.status]}>{STATUS_LABEL[d.status]}</Badge>
           <RoundButton icon="nav" bg={c.ink} fg="#fff" size={44} onPress={nav2} />
         </Row>
@@ -83,13 +83,13 @@ export function ActiveJob() {
               <View style={{ flex: 1 }}><T v="title">{step.title}</T><Muted>{step.sub}</Muted></View>
             </Row>
             <Row gap={8} style={{ flexWrap: "wrap" }}>
-              <Badge tone="neutral">{d.km} km</Badge><Badge tone="neutral">{left} min</Badge><Badge tone="orange">{money(d.price + d.tip)} cash</Badge>
+              <Badge tone="neutral">{d.km} km</Badge><Badge tone="neutral">{left} min</Badge><Badge tone="accent">{money(d.price + d.tip)} cash</Badge>
               <Badge tone="neutral">{d.item}</Badge>
             </Row>
 
             {d.status === "ACCEPTED" ? (
               <>
-                <Button label="I've arrived at pickup" icon="pin" variant="orange" onPress={() => act(d.id, "arrive_pickup")} />
+                <Button label="I've arrived at pickup" icon="pin" variant="accent" onPress={() => act(d.id, "arrive_pickup")} />
                 <Button label="Give job back" variant="danger" onPress={() => { act(d.id, "release"); nav("/driver"); }} />
               </>
             ) : null}
@@ -103,7 +103,7 @@ export function ActiveJob() {
               </>
             ) : null}
 
-            {d.status === "PICKED_UP" ? <Button label="I've arrived at drop-off" icon="pin" variant="orange" onPress={() => act(d.id, "arrive_dropoff")} /> : null}
+            {d.status === "PICKED_UP" ? <Button label="I've arrived at drop-off" icon="pin" variant="accent" onPress={() => act(d.id, "arrive_dropoff")} /> : null}
 
             {d.status === "AT_DROPOFF" ? (
               <>
@@ -111,12 +111,12 @@ export function ActiveJob() {
                 {err ? <T v="small" color={c.red}>{err}</T> : codeOk ? <Row gap={6}><Icon name="check" size={16} color={c.green} strokeWidth={3} /><T v="small" color={c.green}>Code accepted</T></Row> : <Muted>Demo code: {d.code}</Muted>}
                 {!codeOk ? <Button label="Check code" variant="dark" disabled={code.length < 4} onPress={checkCode} /> : null}
                 {codeOk && mustCollect ? (
-                  <Pressable onPress={() => setCashOk(!cashOk)} style={{ flexDirection: "row", alignItems: "center", gap: 12, padding: 14, borderRadius: 18, backgroundColor: cashOk ? c.greenSoft : c.orangeSoft, cursor: "pointer" }}>
-                    <Icon name={cashOk ? "check" : "cash"} size={22} color={cashOk ? c.green : c.orangeDeep} strokeWidth={cashOk ? 3 : 1.8} />
+                  <Pressable onPress={() => setCashOk(!cashOk)} style={{ flexDirection: "row", alignItems: "center", gap: 12, padding: 14, borderRadius: 18, backgroundColor: cashOk ? c.greenSoft : c.accentSoft, cursor: "pointer" }}>
+                    <Icon name={cashOk ? "check" : "cash"} size={22} color={cashOk ? c.green : c.accentDeep} strokeWidth={cashOk ? 3 : 1.8} />
                     <View style={{ flex: 1 }}><T v="body" weight="600">Collect {money(d.price + d.tip)} cash</T><Muted>from {d.recipientName}. Tap when you've got it.</Muted></View>
                   </Pressable>
                 ) : null}
-                <Button label="Complete delivery" variant="orange" icon="check" disabled={!codeOk || (mustCollect && !cashOk)} onPress={() => act(d.id, "deliver")} />
+                <Button label="Complete delivery" variant="accent" icon="check" disabled={!codeOk || (mustCollect && !cashOk)} onPress={() => act(d.id, "deliver")} />
                 <Divider />
                 <Button label="Recipient unreachable or refused" variant="danger" onPress={() => act(d.id, "fail")} />
               </>
@@ -127,7 +127,7 @@ export function ActiveJob() {
             <Divider />
             <Row gap={12}>
               <View style={{ flex: 1 }}><Muted v="tiny">{d.status === "ACCEPTED" || d.status === "AT_PICKUP" ? "Sender" : "Recipient"}</Muted><T v="body" weight="500">{d.status === "ACCEPTED" || d.status === "AT_PICKUP" ? "Neema · Mushi Electronics" : d.recipientName}</T></View>
-              <RoundButton icon="phone" bg={c.orange} />
+              <RoundButton icon="phone" bg={c.accent} />
               <RoundButton icon="chat" bg={c.ink} />
             </Row>
             {d.status !== "AT_DROPOFF" ? (

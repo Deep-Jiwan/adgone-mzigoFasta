@@ -28,8 +28,8 @@ export function Landing() {
             key={card.title} onPress={() => nav(card.to)}
             style={{ flexGrow: 1, flexBasis: desktop ? "45%" : "auto", backgroundColor: card.dark ? c.ink : c.surface, borderRadius: radius.xl, padding: 24, gap: 14, minHeight: 180, overflow: "hidden", cursor: "pointer" }}
           >
-            <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: card.dark ? c.sheet2 : c.canvas, alignItems: "center", justifyContent: "center" }}><Icon name={card.icon} size={22} color={card.dark ? "#fff" : c.ink} /></View>
-            <T v="title" color={card.dark ? "#fff" : c.ink}>{card.title}</T>
+            <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: card.dark ? c.sheet2 : c.canvas, alignItems: "center", justifyContent: "center" }}><Icon name={card.icon} size={22} color={card.dark ? "#fff" : c.text} /></View>
+            <T v="title" color={card.dark ? "#fff" : c.text}>{card.title}</T>
             <T v="body" color={card.dark ? "#B5B5BB" : c.slate} style={{ maxWidth: 300 }}>{card.body}</T>
             <View style={{ position: "absolute", right: -8, bottom: -8, opacity: card.dark ? 0.9 : 1 }}>{card.title === "Driver" || card.title === "Admin" ? <TruckArt size={120} /> : <BoxArt size={110} />}</View>
           </Pressable>
